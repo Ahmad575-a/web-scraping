@@ -12,6 +12,15 @@ async function DeutscheWelle() {
     })
     await fs.writeFile('titles.txt', titles.join("\r\n"))
 
+    const photos = await page.$$eval("img", (imgs) => {
+        return imgs.map(x => x.src)
+    })
+
+    for (const photo of photos) {
+        const imagePage = await page.goto(photo)
+        await fs.writeFile(photo.split("/").pop(), await imagePage.buffer())
+    }
+
     await browser.close()
 }
 
